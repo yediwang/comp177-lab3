@@ -16,12 +16,14 @@ class Button {
   }
   
   void drawButton() {
+    a = width-100;
     stroke(100);
     fill(120);
     rect(a, b, c, d, 5);
   }
   
   void clickButton() {
+    a = width-100;
     if(mouseX > a && mouseX < a+c && mouseY > b && mouseY < b+d) {
       if(!clicked) {
         clicked = true;

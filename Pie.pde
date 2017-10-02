@@ -41,6 +41,7 @@ class Pie {
     if(flag) {
       fill(191);
       if(donut_D < donut_ratio*absD) donut_D+=3;
+      else donut_D = donut_ratio*absD;
       ellipse(absX, absY, donut_D, donut_D);
     }
     else {
