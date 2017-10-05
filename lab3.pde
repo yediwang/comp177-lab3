@@ -14,7 +14,7 @@ void setup() {
 
 void draw() {
   background(BG_CLR);
-  if (pie != null) {
+  if (pie != null && btn != null) {
     mouseOver();
     pie.draw();
     btn.draw();
@@ -35,8 +35,8 @@ void tableToRadians(DataTable table) {
   float total = 0;
   for (int i = 0; i < table.points.size(); i++) 
     total += table.points.get(i).value;
-  for (int i = 0; i < table.points.size(); i++)
-    table.points.get(i).value *= 2 * PI / total;
+  for (DataPoint pt : table.points)
+    pt.value = pt.weight * 2 * PI / total;
 }
 
 void mouseOver() {

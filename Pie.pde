@@ -71,6 +71,23 @@ class Pie implements ButtonCallback {
     return -1;
   }
   
+  private void drawLabel(DataPoint pt) {
+    textSize(12);
+    String label = pt.name + ", " + String.valueOf(pt.weight);
+    float textW = textWidth(label);
+    
+    float border = 20;
+    float absW = textW + border;
+    float absH = textAscent() + textDescent() + border;
+    float absX = mouseX;
+    float absY = mouseY - absH;
+    
+    fill(255);
+    rect(absX, absY, absW, absH);
+    fill(0);
+    text(label, absX + border / 2, absY + border);
+  }
+  
   Boolean isOver() {
     float absX = this.x * width;
     float absY = this.y * height;
@@ -91,12 +108,15 @@ class Pie implements ButtonCallback {
       if (mouseRad >= lastRad && mouseRad < lastRad + pt.value) {
         if (mouseButton == LEFT) {
           float prop = (mouseRad - lastRad) / pt.value;
+          float newWgt = pt.weight * prop;
           float newRad = pt.value * prop;
+          pt.weight *= 1 - prop;
           pt.value *= 1 - prop;
-          this.data.add(i, new DataPoint(String.valueOf(i+1), newRad));
+          this.data.add(i, new DataPoint("New!", newWgt, newRad));
         } else if (mouseButton == RIGHT && this.data.size() > 1) {
           int prevIndex = i - 1 < 0 ? this.data.size() - 1 : i - 1;
           pt.value += this.data.get(prevIndex).value;
+          pt.weight += this.data.get(prevIndex).weight;
           this.data.remove(prevIndex);
           
         }
@@ -110,13 +130,14 @@ class Pie implements ButtonCallback {
     float absX = this.x * width;
     float absY = this.y * height;
     float absR = this.r * min(width, height);
+    int ellipseIdx = onWhichEllipse();
     
     if (this.data.size() > 1) {
       float lastRad = 0;
       for (int i = 0; i < this.data.size(); i++) {
         DataPoint pt = this.data.get(i);
-        float drawR = onWhichEllipse() == i ? EXPAND * absR : absR;
-        color drawClr = onWhichEllipse() == i ? this.hover : getColorAtIndex(i);
+        float drawR = ellipseIdx == i ? EXPAND * absR : absR;
+        color drawClr = ellipseIdx == i ? this.hover : getColorAtIndex(i);
         fill(drawClr);
         arc(absX, absY, drawR * 2, drawR * 2, lastRad, lastRad + pt.value, PIE);
         lastRad += pt.value;
@@ -129,6 +150,7 @@ class Pie implements ButtonCallback {
     }
     
     drawHole();
+    if (ellipseIdx >= 0) drawLabel(this.data.get(ellipseIdx));
   }
   
   // change mode

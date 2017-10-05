@@ -1,9 +1,17 @@
 class DataPoint {
   String name;
+  float weight;
   float value;
   
-  DataPoint(String name, float value) {
+  DataPoint(String name, float weight) {
     this.name = name;
+    this.weight = weight;
+    this.value = weight;
+  }
+  
+  DataPoint(String name, float weight, float value) {
+    this.name = name;
+    this.weight = weight;
     this.value = value;
   }
 }
