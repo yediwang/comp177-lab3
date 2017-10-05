@@ -1,38 +1,57 @@
+interface ButtonCallback {
+  void buttonCallback();
+}
+
 class Button {
-  Pie pie;
-  boolean clicked;
-  float a;
-  float b;
-  float c;
-  float d;
+  float x, y, w, h;
+  color on, off;
+  String text;
+  ButtonCallback callback;
+  private color c;
   
-  Button(Pie pie) {
-    this.pie = pie;
-    clicked = false;
-    a = width-100;
-    b = 20;
-    c = 80;
-    d = 30;
+  Button(float x, float y, float w, float h, color on, color off, String text, ButtonCallback callback) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.on = on;
+    this.off = off;
+    this.text = text;
+    this.callback = callback;
+    this.c = off;
   }
   
-  void drawButton() {
-    a = width-100;
-    stroke(100);
-    fill(120);
-    rect(a, b, c, d, 5);
+  void draw() {
+    float absX = this.x * width;
+    float absY = this.y * height;
+    float absW = this.w * width;
+    float absH = this.h * height;
+    
+    fill(this.c);
+    rect(absX, absY, absW, absH);
+    
+    fill(color(0, 0, 0));
+    textSize(this.h * 0.6 * height);
+    float textW = textWidth(this.text);
+    text(this.text, absX + (absW - textW) / 2, absY + textAscent() + textDescent());
   }
   
-  void clickButton() {
-    a = width-100;
-    if(mouseX > a && mouseX < a+c && mouseY > b && mouseY < b+d) {
-      if(!clicked) {
-        clicked = true;
-        pie.drawDonut(true);
-      }
-      else {
-        clicked = false;
-        pie.drawDonut(false);
-      }
-    }
+  Boolean isOver() {
+    float fracMX = mouseX / float(width);
+    float fracMY = mouseY / float(height);
+    return fracMX >= this.x && fracMX <= this.x + this.w &&
+           fracMY >= this.y && fracMY <= this.y + this.h;
+  }
+  
+  void onOver() {
+    this.c = this.on;
+  }
+  
+  void onOff() {
+    this.c = this.off;
+  }
+  
+  void onClick() {
+    this.callback.buttonCallback();
   }
 }
